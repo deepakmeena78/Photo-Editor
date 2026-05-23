@@ -1,5 +1,17 @@
-// src/constants/index.js
-// All app-wide constants, config arrays, and pure utility functions
+// src/constants/index.jsx
+// All app-wide constants, config arrays, and pure utility functions.
+// Adjustment icons are React elements (react-icons / Lucide) so the UI keeps
+// a consistent, monochromatic look — see ./icons.jsx for the chrome registry.
+
+import {
+  LuSun, LuContrast, LuLightbulb, LuSunMedium, LuMoon,
+  LuArrowUpToLine, LuArrowDownToLine,
+  LuDroplet, LuRainbow, LuRefreshCw, LuThermometer, LuPaintbrush, LuFlame,
+  LuCloudFog, LuFocus, LuDiamond, LuRadio,
+  LuCircleDot, LuWheat, LuGhost, LuCamera, LuRotateCw, LuSparkles, LuEye,
+  LuPalette, LuMicroscope, LuWand, LuFilter, LuCrop, LuMove, LuType, LuDownload,
+  LuSearch, LuRuler,
+} from 'react-icons/lu';
 
 // ═══════════════════════════════════════════════════════════
 // TABS CONFIG
@@ -7,15 +19,15 @@
 export const TABS = ['Light', 'Color', 'Detail', 'Effects', 'Filters', 'Crop', 'Transform', 'Text', 'Export'];
 
 export const TAB_ICONS = {
-  Light:     '☀️',
-  Color:     '🎨',
-  Detail:    '🔬',
-  Effects:   '✨',
-  Filters:   '🌈',
-  Crop:      '✂️',
-  Transform: '↕️',
-  Text:      '📝',
-  Export:    '💾',
+  Light:     <LuSun        size={16} strokeWidth={2} />,
+  Color:     <LuPalette    size={16} strokeWidth={2} />,
+  Detail:    <LuMicroscope size={16} strokeWidth={2} />,
+  Effects:   <LuWand       size={16} strokeWidth={2} />,
+  Filters:   <LuFilter     size={16} strokeWidth={2} />,
+  Crop:      <LuCrop       size={16} strokeWidth={2} />,
+  Transform: <LuMove       size={16} strokeWidth={2} />,
+  Text:      <LuType       size={16} strokeWidth={2} />,
+  Export:    <LuDownload   size={16} strokeWidth={2} />,
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -26,48 +38,48 @@ export const TAB_ICONS = {
 let __pcIdCounter = 0;
 export function nextId(prefix = 'id') {
   __pcIdCounter += 1;
-  // Combine timestamp with counter so IDs remain roughly sortable
-  // and survive component remounts during HMR.
   return `${prefix}_${Date.now().toString(36)}_${__pcIdCounter.toString(36)}`;
 }
 
 // ═══════════════════════════════════════════════════════════
 // ADJUSTMENT GROUPS
 // ═══════════════════════════════════════════════════════════
+const ADJ_ICON_SIZE = 14;
+
 export const LIGHT_ADJUSTMENTS = [
-  { key: 'brightness', label: 'Brightness', icon: '☀️', min: 0,    max: 200, default: 100, unit: '%'  },
-  { key: 'contrast',   label: 'Contrast',   icon: '◐',  min: 0,    max: 200, default: 100, unit: '%'  },
-  { key: 'exposure',   label: 'Exposure',   icon: '💡', min: -100, max: 100, default: 0,   unit: ''   },
-  { key: 'highlights', label: 'Highlights', icon: '🔆', min: -100, max: 100, default: 0,   unit: ''   },
-  { key: 'shadows',    label: 'Shadows',    icon: '🔅', min: -100, max: 100, default: 0,   unit: ''   },
-  { key: 'whites',     label: 'Whites',     icon: '⬜', min: -100, max: 100, default: 0,   unit: ''   },
-  { key: 'blacks',     label: 'Blacks',     icon: '⬛', min: -100, max: 100, default: 0,   unit: ''   },
+  { key: 'brightness', label: 'Brightness', icon: <LuSun             size={ADJ_ICON_SIZE} />, min: 0,    max: 200, default: 100, unit: '%'  },
+  { key: 'contrast',   label: 'Contrast',   icon: <LuContrast        size={ADJ_ICON_SIZE} />, min: 0,    max: 200, default: 100, unit: '%'  },
+  { key: 'exposure',   label: 'Exposure',   icon: <LuLightbulb       size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''   },
+  { key: 'highlights', label: 'Highlights', icon: <LuSunMedium       size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''   },
+  { key: 'shadows',    label: 'Shadows',    icon: <LuMoon            size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''   },
+  { key: 'whites',     label: 'Whites',     icon: <LuArrowUpToLine   size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''   },
+  { key: 'blacks',     label: 'Blacks',     icon: <LuArrowDownToLine size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''   },
 ];
 
 export const COLOR_ADJUSTMENTS = [
-  { key: 'saturate',     label: 'Saturation',   icon: '💧', min: 0,    max: 300, default: 100, unit: '%' },
-  { key: 'vibrance',     label: 'Vibrance',     icon: '🌈', min: -100, max: 100, default: 0,   unit: ''  },
-  { key: 'hue',          label: 'Hue',          icon: '🎡', min: 0,    max: 360, default: 0,   unit: '°' },
-  { key: 'temperature',  label: 'Temperature',  icon: '🌡️', min: -100, max: 100, default: 0,   unit: ''  },
-  { key: 'tint',         label: 'Tint',         icon: '🎨', min: -100, max: 100, default: 0,   unit: ''  },
-  { key: 'sepia',        label: 'Warmth',       icon: '🌅', min: 0,    max: 100, default: 0,   unit: '%' },
+  { key: 'saturate',    label: 'Saturation',  icon: <LuDroplet     size={ADJ_ICON_SIZE} />, min: 0,    max: 300, default: 100, unit: '%' },
+  { key: 'vibrance',    label: 'Vibrance',    icon: <LuRainbow     size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''  },
+  { key: 'hue',         label: 'Hue',         icon: <LuRefreshCw   size={ADJ_ICON_SIZE} />, min: 0,    max: 360, default: 0,   unit: '°' },
+  { key: 'temperature', label: 'Temperature', icon: <LuThermometer size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''  },
+  { key: 'tint',        label: 'Tint',        icon: <LuPaintbrush  size={ADJ_ICON_SIZE} />, min: -100, max: 100, default: 0,   unit: ''  },
+  { key: 'sepia',       label: 'Warmth',      icon: <LuFlame       size={ADJ_ICON_SIZE} />, min: 0,    max: 100, default: 0,   unit: '%' },
 ];
 
 export const DETAIL_ADJUSTMENTS = [
-  { key: 'blur',     label: 'Blur',     icon: '🌫️', min: 0, max: 20,  default: 0, unit: 'px' },
-  { key: 'sharpen',  label: 'Sharpen',  icon: '🔪', min: 0, max: 100, default: 0, unit: ''   },
-  { key: 'clarity',  label: 'Clarity',  icon: '💎', min: 0, max: 100, default: 0, unit: ''   },
-  { key: 'noise',    label: 'Denoise',  icon: '📡', min: 0, max: 100, default: 0, unit: ''   },
+  { key: 'blur',    label: 'Blur',    icon: <LuCloudFog size={ADJ_ICON_SIZE} />, min: 0, max: 20,  default: 0, unit: 'px' },
+  { key: 'sharpen', label: 'Sharpen', icon: <LuFocus    size={ADJ_ICON_SIZE} />, min: 0, max: 100, default: 0, unit: ''   },
+  { key: 'clarity', label: 'Clarity', icon: <LuDiamond  size={ADJ_ICON_SIZE} />, min: 0, max: 100, default: 0, unit: ''   },
+  { key: 'noise',   label: 'Denoise', icon: <LuRadio    size={ADJ_ICON_SIZE} />, min: 0, max: 100, default: 0, unit: ''   },
 ];
 
 export const EFFECTS_ADJUSTMENTS = [
-  { key: 'vignette',     label: 'Vignette',  icon: '🔲', min: 0,   max: 100, default: 0,   unit: '%' },
-  { key: 'grain',        label: 'Grain',     icon: '🌾', min: 0,   max: 100, default: 0,   unit: '%' },
-  { key: 'fade',         label: 'Fade',      icon: '👻', min: 0,   max: 100, default: 0,   unit: '%' },
-  { key: 'grayscale',    label: 'B & W',     icon: '📷', min: 0,   max: 100, default: 0,   unit: '%' },
-  { key: 'invert',       label: 'Invert',    icon: '🔄', min: 0,   max: 100, default: 0,   unit: '%' },
-  { key: 'glow',         label: 'Glow',      icon: '✨', min: 0,   max: 50,  default: 0,   unit: 'px'},
-  { key: 'opacity',      label: 'Opacity',   icon: '🫧', min: 10,  max: 100, default: 100, unit: '%' },
+  { key: 'vignette',  label: 'Vignette', icon: <LuCircleDot size={ADJ_ICON_SIZE} />, min: 0,  max: 100, default: 0,   unit: '%' },
+  { key: 'grain',     label: 'Grain',    icon: <LuWheat     size={ADJ_ICON_SIZE} />, min: 0,  max: 100, default: 0,   unit: '%' },
+  { key: 'fade',      label: 'Fade',     icon: <LuGhost     size={ADJ_ICON_SIZE} />, min: 0,  max: 100, default: 0,   unit: '%' },
+  { key: 'grayscale', label: 'B & W',    icon: <LuCamera    size={ADJ_ICON_SIZE} />, min: 0,  max: 100, default: 0,   unit: '%' },
+  { key: 'invert',    label: 'Invert',   icon: <LuRotateCw  size={ADJ_ICON_SIZE} />, min: 0,  max: 100, default: 0,   unit: '%' },
+  { key: 'glow',      label: 'Glow',     icon: <LuSparkles  size={ADJ_ICON_SIZE} />, min: 0,  max: 50,  default: 0,   unit: 'px'},
+  { key: 'opacity',   label: 'Opacity',  icon: <LuEye       size={ADJ_ICON_SIZE} />, min: 10, max: 100, default: 100, unit: '%' },
 ];
 
 export const ALL_ADJUSTMENTS = [
@@ -78,6 +90,10 @@ export const ALL_ADJUSTMENTS = [
 ];
 
 export const DEFAULT_ADJ = Object.fromEntries(ALL_ADJUSTMENTS.map(a => [a.key, a.default]));
+
+// Ad-hoc icons referenced from panel code (zoom / straighten sliders).
+export const ZOOM_ICON       = <LuSearch size={ADJ_ICON_SIZE} />;
+export const STRAIGHTEN_ICON = <LuRuler  size={ADJ_ICON_SIZE} />;
 
 // ═══════════════════════════════════════════════════════════
 // PRESET FILTERS
@@ -139,19 +155,18 @@ export const EXPORT_FORMATS = [
 // FRAME OPTIONS
 // ═══════════════════════════════════════════════════════════
 export const FRAME_OPTIONS = [
-  { id: 'none',   label: 'None' },
-  { id: 'white',  label: 'White' },
-  { id: 'black',  label: 'Black' },
-  { id: 'shadow', label: 'Shadow' },
+  { id: 'none',     label: 'None' },
+  { id: 'white',    label: 'White' },
+  { id: 'black',    label: 'Black' },
+  { id: 'shadow',   label: 'Shadow' },
   { id: 'polaroid', label: 'Polaroid' },
-  { id: 'film',   label: 'Film' },
+  { id: 'film',     label: 'Film' },
 ];
 
 // ═══════════════════════════════════════════════════════════
 // BUILD CSS FILTER STRING
 // ═══════════════════════════════════════════════════════════
 export function buildFilter(a) {
-  // Light calculations
   const brt = Math.max(0, Math.min(400,
     a.brightness
     + (a.exposure   || 0) * 0.8
@@ -166,7 +181,6 @@ export function buildFilter(a) {
     + (a.sharpen || 0) * 0.3
   ));
 
-  // Color calculations
   const sat = Math.max(0, Math.min(500,
     a.saturate + (a.vibrance || 0) * 0.6
   ));
@@ -175,7 +189,6 @@ export function buildFilter(a) {
     (a.sepia || 0) + Math.max(0, (a.temperature || 0)) * 0.4
   ));
 
-  // Effects
   const opac = Math.max(0, Math.min(100,
     (a.opacity || 100) - (a.fade || 0) * 0.5
   ));

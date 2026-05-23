@@ -1,7 +1,7 @@
 // src/components/ui/index.jsx
 // All reusable UI primitives
 
-import { useMemo } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 // ═══════════════════════════════════════════════════════════
 // ADJUSTMENT SLIDER
@@ -9,6 +9,40 @@ import { useMemo } from 'react';
 export function AdjSlider({ adj, value, onChange, onCommit, disabled }) {
   const pct     = ((value - adj.min) / (adj.max - adj.min)) * 100;
   const changed = value !== adj.default;
+
+  const trackRef = useRef(null);
+  const stateRef = useRef({ value, onChange, onCommit, disabled });
+  useEffect(() => {
+    stateRef.current = { value, onChange, onCommit, disabled };
+  });
+
+  useEffect(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    let commitTimer = null;
+
+    const onWheel = (e) => {
+      const s = stateRef.current;
+      if (s.disabled) return;
+      e.preventDefault();
+      const step = e.shiftKey ? Math.max(1, Math.round((adj.max - adj.min) / 20)) : 1;
+      const delta = e.deltaY < 0 ? step : -step;
+      const next = Math.max(adj.min, Math.min(adj.max, s.value + delta));
+      if (next === s.value) return;
+      s.onChange(next);
+      if (commitTimer) clearTimeout(commitTimer);
+      commitTimer = setTimeout(() => {
+        stateRef.current.onCommit?.(adj.key, stateRef.current.value);
+      }, 220);
+    };
+
+    el.addEventListener('wheel', onWheel, { passive: false });
+    return () => {
+      el.removeEventListener('wheel', onWheel);
+      if (commitTimer) clearTimeout(commitTimer);
+    };
+  }, [adj.key, adj.min, adj.max]);
+
   return (
     <div className="pc-srow">
       <div className="pc-shead">
@@ -35,7 +69,7 @@ export function AdjSlider({ adj, value, onChange, onCommit, disabled }) {
           )}
         </div>
       </div>
-      <div className="pc-strack">
+      <div className="pc-strack" ref={trackRef} title="Drag, or scroll wheel to nudge (Shift = larger step)">
         <div className="pc-strack__bg" />
         <div className={`pc-strack__fill ${changed ? 'chg' : 'def'}`} style={{ width: `${pct}%` }} />
         <input

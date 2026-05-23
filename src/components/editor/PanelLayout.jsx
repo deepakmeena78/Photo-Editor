@@ -124,7 +124,7 @@ function TabContent({ tab, state, isMobile }) {
 // DESKTOP SIDEBAR
 // ═══════════════════════════════════════════════════════════
 export function Sidebar({ activeTab, setActiveTab, state }) {
-  const { canUndo, canRedo, undo, redo, resetAll, handleSave, hasImage, isCropping, isSaving } = state;
+  const { canUndo, canRedo, undo, redo, handleSave, hasImage, isCropping, isSaving } = state;
 
   return (
     <aside className="pc-sidebar">
@@ -152,12 +152,9 @@ export function Sidebar({ activeTab, setActiveTab, state }) {
           <Btn onClick={undo} disabled={!canUndo} variant="ghost" full size="sm">{IC.Undo} Undo</Btn>
           <Btn onClick={redo} disabled={!canRedo} variant="ghost" full size="sm">{IC.Redo} Redo</Btn>
         </div>
-        <div style={{ display: 'flex', gap: '7px' }}>
-          <Btn onClick={resetAll}   disabled={!hasImage}                 variant="danger"   full size="sm">{IC.Reset} Reset</Btn>
-          <Btn onClick={handleSave} disabled={!hasImage || isCropping || isSaving} variant="primary" full size="sm">
-            {isSaving ? '⏳' : IC.Save} Export
-          </Btn>
-        </div>
+        <Btn onClick={handleSave} disabled={!hasImage || isCropping || isSaving} variant="primary" full size="sm">
+          {isSaving ? IC.Spinner : IC.Save} Export
+        </Btn>
       </div>
     </aside>
   );
@@ -167,7 +164,7 @@ export function Sidebar({ activeTab, setActiveTab, state }) {
 // MOBILE PANEL (Lightroom style — bottom of screen)
 // ═══════════════════════════════════════════════════════════
 export function MobilePanel({ activeTab, setActiveTab, state }) {
-  const { canUndo, canRedo, undo, redo, resetAll, handleSave, hasImage, isCropping, isSaving } = state;
+  const { canUndo, canRedo, undo, redo, handleSave, hasImage, isCropping, isSaving } = state;
 
   return (
     <div className="pc-mobile-panel">
@@ -176,9 +173,8 @@ export function MobilePanel({ activeTab, setActiveTab, state }) {
         <Btn onClick={undo} disabled={!canUndo} variant="ghost" size="sm">{IC.Undo}</Btn>
         <Btn onClick={redo} disabled={!canRedo} variant="ghost" size="sm">{IC.Redo}</Btn>
         <div style={{ flex: 1 }} />
-        <Btn onClick={resetAll}   disabled={!hasImage}                          variant="danger"  size="sm">{IC.Reset}</Btn>
         <Btn onClick={handleSave} disabled={!hasImage || isCropping || isSaving} variant="primary" size="sm">
-          {isSaving ? '⏳' : IC.Save} Save
+          {isSaving ? IC.Spinner : IC.Save} Save
         </Btn>
       </div>
 

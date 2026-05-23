@@ -1,6 +1,7 @@
 // src/components/editor/Canvas.jsx
 import { buildGrainStyle } from '../../constants';
 import { IC } from '../../constants/icons';
+import { LuLoaderCircle, LuImage } from 'react-icons/lu';
 import { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 
 export default function Canvas({
@@ -64,9 +65,34 @@ export default function Canvas({
     setStickers(prev => prev.map(s => (s.id === id ? { ...s, ...updater(s) } : s)));
   }, [setTexts, setStickers]);
 
+  const deleteLayer = useCallback((type, id) => {
+    if (type === 'text') {
+      setTexts(prev => prev.filter(t => t.id !== id));
+    } else {
+      setStickers(prev => prev.filter(s => s.id !== id));
+    }
+    setActiveLayer(cur => (cur?.type === type && cur?.id === id) ? null : cur);
+  }, [setTexts, setStickers, setActiveLayer]);
+
+  // Delete the active layer via Delete / Backspace, unless the user is typing.
+  useEffect(() => {
+    if (!activeLayer) return;
+    const onKey = (e) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+      const t = e.target;
+      const tag = t?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || t?.isContentEditable) return;
+      e.preventDefault();
+      deleteLayer(activeLayer.type, activeLayer.id);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [activeLayer, deleteLayer]);
+
   // ── Overlay (text/sticker) drag ──
   const handleLayerPointerDown = useCallback((e, type, item) => {
     if (e.target.closest('.pc-canvas__resize')) return;
+    if (e.target.closest('.pc-canvas__delete')) return;
     e.stopPropagation();
     setActiveLayer({ type, id: item.id });
     const rect = imgRef.current?.getBoundingClientRect();
@@ -308,11 +334,7 @@ export default function Canvas({
       {!hasImage ? (
         <div className="pc-drop" onClick={openFile}>
           <div className="pc-drop__icon">
-            <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#d97706" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="3" width="18" height="18" rx="2"/>
-              <circle cx="8.5" cy="8.5" r="1.5"/>
-              <polyline points="21 15 16 10 5 21"/>
-            </svg>
+            <LuImage size={34} color="#d97706" strokeWidth={1.5} />
           </div>
           <div>
             <p className="pc-drop__title">Drop your image here</p>
@@ -392,6 +414,16 @@ export default function Canvas({
                 onPointerDown={(e) => handleLayerPointerDown(e, 'text', t)}
               >
                 {t.text || ' '}
+                {isActive && (
+                  <button
+                    type="button"
+                    className="pc-canvas__delete"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); deleteLayer('text', t.id); }}
+                    aria-label="Delete text"
+                    title="Delete (Del)"
+                  >{IC.Close}</button>
+                )}
                 <button
                   className="pc-canvas__resize"
                   onPointerDown={(e) => handleResizePointerDown(e, 'text', t)}
@@ -422,6 +454,16 @@ export default function Canvas({
                 onPointerDown={(e) => handleLayerPointerDown(e, 'sticker', s)}
               >
                 {s.emoji}
+                {isActive && (
+                  <button
+                    type="button"
+                    className="pc-canvas__delete"
+                    onPointerDown={(e) => e.stopPropagation()}
+                    onClick={(e) => { e.stopPropagation(); deleteLayer('sticker', s.id); }}
+                    aria-label="Delete sticker"
+                    title="Delete (Del)"
+                  >{IC.Close}</button>
+                )}
                 <button
                   className="pc-canvas__resize"
                   onPointerDown={(e) => handleResizePointerDown(e, 'sticker', s)}
@@ -434,7 +476,7 @@ export default function Canvas({
           {/* Saving overlay */}
           {isSaving && (
             <div className="pc-saving-overlay">
-              <span className="pc-spin" style={{ fontSize: '28px' }}>⏳</span>
+              <LuLoaderCircle size={28} strokeWidth={2.25} className="pc-spin" />
             </div>
           )}
         </div>

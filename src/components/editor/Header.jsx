@@ -1,5 +1,6 @@
 // src/components/editor/Header.jsx
 import { useEffect, useRef, useState } from 'react';
+import { LuAperture } from 'react-icons/lu';
 import { IBtn } from '../ui';
 import { IC } from '../../constants/icons';
 
@@ -11,6 +12,7 @@ export default function Header({
   showGrid, setShowGrid,
   handleSave, openFile,
   isModified,
+  resetAll,
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(Boolean(document.fullscreenElement));
@@ -54,7 +56,7 @@ export default function Header({
       {/* ── Left: Brand + filename ── */}
       <div className="pc-header__col pc-header__col--brand">
         <div className="pc-brand">
-          <div className="pc-brand__icon">✦</div>
+          <div className="pc-brand__icon"><LuAperture size={18} strokeWidth={2.25} /></div>
           <span className="pc-brand__name">PixelCraft</span>
         </div>
         {fileName && <span className="pc-header__fname">— {fileName}{isModified ? ' •' : ''}</span>}
@@ -62,10 +64,11 @@ export default function Header({
 
       {/* ── Center: Tools (scroll on narrow screens so nothing clips) ── */}
       <div className="pc-header__tools" aria-label="Editor tools">
-        <IBtn onClick={undo} disabled={!canUndo} title="Undo (Ctrl+Z)" size={32}>{IC.Undo}</IBtn>
-        <IBtn onClick={redo} disabled={!canRedo} title="Redo (Ctrl+Y)" size={32}>{IC.Redo}</IBtn>
-
-        <div className="pc-vdivider" />
+        <div className="pc-header__history">
+          <IBtn onClick={undo} disabled={!canUndo} title="Undo (Ctrl+Z)" size={32}>{IC.Undo}</IBtn>
+          <IBtn onClick={redo} disabled={!canRedo} title="Redo (Ctrl+Y)" size={32}>{IC.Redo}</IBtn>
+          <div className="pc-vdivider" />
+        </div>
 
         <IBtn onClick={() => setZoom(z => +(Math.min(4, z + 0.15)).toFixed(2))} disabled={!hasImage} title="Zoom In"   size={32}>{IC.ZoomIn}</IBtn>
         <IBtn onClick={() => setZoom(z => +(Math.max(0.2, z - 0.15)).toFixed(2))} disabled={!hasImage} title="Zoom Out"  size={32}>{IC.ZoomOut}</IBtn>
@@ -115,6 +118,18 @@ export default function Header({
         >
           {IC.Compare}
         </IBtn>
+
+        <div className="pc-vdivider" />
+
+        <IBtn
+          onClick={resetAll}
+          disabled={!hasImage}
+          title="Reset to original"
+          size={32}
+          className="pc-ib--danger"
+        >
+          {IC.Reset}
+        </IBtn>
       </div>
 
       {/* ── Right: Hamburger Menu ── */}
@@ -149,7 +164,7 @@ export default function Header({
               onClick={() => { handleSave(); setMenuOpen(false); }}
               disabled={!hasImage || isCropping || isSaving}
             >
-              <span className="pc-menu__ico">{isSaving ? '⏳' : IC.Save}</span>
+              <span className="pc-menu__ico">{isSaving ? IC.Spinner : IC.Save}</span>
               <span>Export</span>
             </button>
           </div>

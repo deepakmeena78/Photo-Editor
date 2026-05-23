@@ -5,7 +5,9 @@ import { useEffect, useState } from 'react';
 import {
   LIGHT_ADJUSTMENTS, COLOR_ADJUSTMENTS, DETAIL_ADJUSTMENTS, EFFECTS_ADJUSTMENTS,
   PRESET_FILTERS, ASPECT_RATIOS, EXPORT_FORMATS, FRAME_OPTIONS,
+  ZOOM_ICON, STRAIGHTEN_ICON,
 } from '../../constants';
+import { LuLock, LuLockOpen } from 'react-icons/lu';
 import { AdjSlider, FilterCard, Btn, Tag, SL, HDivider, RangeRow } from '../ui';
 import Histogram from '../ui/Histogram';
 import { IC } from '../../constants/icons';
@@ -281,17 +283,17 @@ export function CropPanel({
 // TRANSFORM PANEL
 // ═══════════════════════════════════════════════════════════
 export function TransformPanel({ tx, setZoom, rotate, flip, hasImage, setStraighten, commitStraighten }) {
-  const zoomAdj = { key: 'zoom', label: 'Zoom', icon: '🔍', min: 0.2, max: 4, default: 1, unit: '×' };
+  const zoomAdj = { key: 'zoom', label: 'Zoom', icon: ZOOM_ICON, min: 0.2, max: 4, default: 1, unit: '×' };
 
   return (
     <div>
       <SL>Rotate</SL>
       <div className="pc-tf-row">
         <button className="pc-tf-btn" onClick={() => rotate(-1)} disabled={!hasImage}>
-          {IC.RotL}<span>↺ Left 90°</span>
+          {IC.RotL}<span>Left 90°</span>
         </button>
         <button className="pc-tf-btn" onClick={() => rotate(1)}  disabled={!hasImage}>
-          {IC.RotR}<span>↻ Right 90°</span>
+          {IC.RotR}<span>Right 90°</span>
         </button>
       </div>
 
@@ -310,7 +312,7 @@ export function TransformPanel({ tx, setZoom, rotate, flip, hasImage, setStraigh
 
       <SL>Fine Rotation</SL>
       <AdjSlider
-        adj={{ key: 'straighten', label: 'Straighten', icon: '📐', min: -45, max: 45, default: 0, unit: '°' }}
+        adj={{ key: 'straighten', label: 'Straighten', icon: STRAIGHTEN_ICON, min: -45, max: 45, default: 0, unit: '°' }}
         value={tx.straighten || 0}
         onChange={setStraighten}
         onCommit={(_, v) => commitStraighten?.(v)}
@@ -436,7 +438,9 @@ export function ExportPanel({
           </div>
           <div style={{ marginBottom: 12 }}>
             <Tag
-              label={lockAspect ? '🔒 Aspect locked' : '🔓 Aspect free'}
+              label={lockAspect
+                ? <><LuLock size={12} /> Aspect locked</>
+                : <><LuLockOpen size={12} /> Aspect free</>}
               active={lockAspect}
               onClick={() => setLockAspect(p => !p)}
             />
@@ -464,7 +468,7 @@ export function ExportPanel({
 
       <Btn onClick={handleSave} variant="primary" full disabled={!hasImage || isSaving} size="md">
         {isSaving
-          ? <><span className="pc-spin">⏳</span> Exporting...</>
+          ? <>{IC.Spinner} Exporting...</>
           : <>{IC.Download} Export & Download</>
         }
       </Btn>

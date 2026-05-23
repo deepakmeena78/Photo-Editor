@@ -23,7 +23,7 @@ export default function ImageEditor() {
     activeTab, setActiveTab, showBefore, setShowBefore, showGrid, setShowGrid,
     isSaving, toastMsg,
     // history
-    canUndo, canRedo, undo, redo,
+    canUndo, canRedo, undo, redo, resetAll,
     // handlers
     handleFile, handleDrop, handleSave,
     // zoom / pan
@@ -70,6 +70,7 @@ export default function ImageEditor() {
         handleSave={handleSave}
         openFile={() => fileRef.current?.click()}
         isModified={isModified}
+        resetAll={resetAll}
       />
 
       {/* ══ BODY ══ */}

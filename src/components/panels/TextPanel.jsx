@@ -6,6 +6,10 @@
 // layer. Sticker mode uses the searchable categorized library.
 
 import { useState } from 'react';
+import {
+  LuType, LuSticker, LuCloudFog, LuCircleDashed,
+  LuAlignLeft, LuAlignCenter, LuAlignRight,
+} from 'react-icons/lu';
 import { Btn, Tag, SL, HDivider, RangeRow } from '../ui';
 import { IC } from '../../constants/icons';
 import { nextId } from '../../constants';
@@ -181,8 +185,8 @@ export default function TextPanel({
     <div>
       {/* Mode tabs */}
       <div className="pc-tt-modes">
-        <Tag label="✏️ Text"    active={mode === 'text'}    onClick={() => setMode('text')} />
-        <Tag label="😊 Sticker" active={mode === 'sticker'} onClick={() => setMode('sticker')} />
+        <Tag label={<><LuType size={13} /> Text</>}    active={mode === 'text'}    onClick={() => setMode('text')} />
+        <Tag label={<><LuSticker size={13} /> Sticker</>} active={mode === 'sticker'} onClick={() => setMode('sticker')} />
       </div>
 
       {/* ── TEXT MODE ────────────────────────────────────── */}
@@ -267,22 +271,22 @@ export default function TextPanel({
               className={`pc-toggle ${val('shadow') ? 'on' : ''}`}
               onClick={() => set('shadow', !val('shadow'))}
               title="Drop shadow"
-            >🌫️</button>
+            ><LuCloudFog size={14} /></button>
             <button
               type="button"
               className={`pc-toggle ${(val('strokeWidth') || 0) > 0 ? 'on' : ''}`}
               onClick={() => set('strokeWidth', (val('strokeWidth') || 0) > 0 ? 0 : 2)}
               title="Outline"
-            >⭕</button>
+            ><LuCircleDashed size={14} /></button>
           </div>
 
           {/* Alignment (matters only for multi-line text) */}
           <SL>Alignment</SL>
           <div className="pc-text-toggles">
             {[
-              ['left',   '⬅️'],
-              ['center', '⏺'],
-              ['right',  '➡️'],
+              ['left',   <LuAlignLeft size={14} />],
+              ['center', <LuAlignCenter size={14} />],
+              ['right',  <LuAlignRight size={14} />],
             ].map(([id, ico]) => (
               <button
                 key={id}
