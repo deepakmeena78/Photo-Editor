@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node scripts/smoke-test.mjs 2>&1)"
+    ]
+  }
+}
